@@ -1,0 +1,2662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCQ Management Platform - Premium Dashboard</title>
+  
+  <!-- CSS Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --font-family: 'Plus Jakarta Sans', sans-serif;
+      --bg-base: #f8fafc;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --sidebar-width: 260px;
+      --accent-color: #6366f1;
+      --indigo-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      --purple-gradient: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+      --emerald-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+      --orange-gradient: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+      --cyan-gradient: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      --dark-glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+      --hover-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark-theme {
+      --bg-base: #090d16;
+      --bg-card: #131b2e;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border-color: #1e293b;
+      --dark-glass-bg: rgba(15, 23, 42, 0.45);
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--text-secondary);
+      border-radius: 4px;
+    }
+
+    /* Cards & Styling */
+    .premium-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--glass-shadow);
+      transition: var(--hover-transition);
+      backdrop-filter: blur(8px);
+    }
+    .premium-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
+    }
+
+    .gradient-card-indigo { background: var(--indigo-gradient); color: #fff; }
+    .gradient-card-purple { background: var(--purple-gradient); color: #fff; }
+    .gradient-card-emerald { background: var(--emerald-gradient); color: #fff; }
+    .gradient-card-orange { background: var(--orange-gradient); color: #fff; }
+    .gradient-card-cyan { background: var(--cyan-gradient); color: #fff; }
+
+    /* Admin Sidebar Layout */
+    #adminSidebar {
+      width: var(--sidebar-width);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      transition: var(--hover-transition);
+    }
+    #adminContentWrapper {
+      margin-left: var(--sidebar-width);
+      transition: var(--hover-transition);
+      min-height: 100vh;
+    }
+
+    @media (max-width: 991.98px) {
+      #adminSidebar {
+        transform: translateX(-100%);
+      }
+      #adminSidebar.active {
+        transform: translateX(0);
+      }
+      #adminContentWrapper {
+        margin-left: 0 !important;
+      }
+    }
+
+    /* Auth Background Elements */
+    .auth-bg {
+      background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Utility custom buttons */
+    .btn-gradient {
+      background: var(--indigo-gradient);
+      border: none;
+      color: white !important;
+      font-weight: 600;
+      border-radius: 10px;
+      transition: var(--hover-transition);
+    }
+    .btn-gradient:hover {
+      opacity: 0.9;
+      transform: scale(1.02);
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    .avatar-sm {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--indigo-gradient);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .nav-link-custom {
+      color: var(--text-secondary);
+      font-weight: 500;
+      border-radius: 10px;
+      transition: var(--hover-transition);
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .nav-link-custom:hover, .nav-link-custom.active {
+      background: var(--bg-base);
+      color: var(--accent-color);
+      font-weight: 600;
+    }
+
+    /* Option styling in exam engine */
+    .option-pill {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      cursor: pointer;
+      transition: var(--hover-transition);
+      background-color: var(--bg-card);
+    }
+    .option-pill:hover {
+      border-color: var(--accent-color);
+      background-color: rgba(99, 102, 241, 0.05);
+    }
+    .option-pill.selected {
+      border-color: var(--accent-color);
+      background-color: rgba(99, 102, 241, 0.1);
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+    .option-pill.correct {
+      border-color: #10b981;
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #065f46;
+    }
+    .option-pill.incorrect {
+      border-color: #ef4444;
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #991b1b;
+    }
+
+    /* Search Results overlay dropdown */
+    .search-results-overlay {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--glass-shadow);
+      z-index: 1050;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .loader-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-base);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+  </style>
+</head>
+<body class="light-theme">
+
+  <!-- Spinner Overlay -->
+  <div id="loaderOverlay" class="loader-overlay">
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="mt-3 text-secondary">Initializing Realtime Platform...</h5>
+  </div>
+
+  <!-- AUTH VIEW -->
+  <div id="view-auth" class="view-section auth-bg d-none">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-5">
+          <div class="premium-card p-5">
+            <!-- Theme toggle in Auth -->
+            <div class="d-flex justify-content-end mb-3">
+              <button class="btn btn-sm btn-outline-secondary theme-toggle-btn">
+                <i class="fas fa-moon"></i>
+              </button>
+            </div>
+            
+            <div class="text-center mb-4">
+              <div class="avatar-sm mx-auto mb-3" style="width: 60px; height: 60px; font-size: 24px;">
+                <i class="fas fa-graduation-cap"></i>
+              </div>
+              <h3 class="fw-extrabold" id="authTitle">Sign In</h3>
+              <p class="text-secondary" id="authSubtitle">Access your testing portal</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+              <div class="mb-3">
+                <label class="form-label text-secondary">Email Address</label>
+                <input type="email" class="form-control" id="loginEmail" required placeholder="admin@mcq.com / student@mcq.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary">Password</label>
+                <input type="password" class="form-control" id="loginPassword" required placeholder="••••••••">
+              </div>
+              <div class="form-check mb-4">
+                <input class="form-check-input" type="checkbox" id="rememberMe">
+                <label class="form-check-label text-secondary" for="rememberMe">Remember Me</label>
+              </div>
+              <button type="submit" class="btn btn-gradient w-100 py-3">Sign In</button>
+            </form>
+
+            <!-- Registration Form (Hidden by default) -->
+            <form id="signupForm" class="auth-form d-none">
+              <div class="mb-3">
+                <label class="form-label text-secondary">Full Name</label>
+                <input type="text" class="form-control" id="signupName" required placeholder="John Doe">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary">Email Address</label>
+                <input type="email" class="form-control" id="signupEmail" required placeholder="johndoe@email.com">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary">Password</label>
+                <input type="password" class="form-control" id="signupPassword" required placeholder="••••••••">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary">Confirm Password</label>
+                <input type="password" class="form-control" id="signupConfirmPassword" required placeholder="••••••••">
+              </div>
+              <div class="mb-3">
+                <label class="form-label text-secondary">Assign Role</label>
+                <select class="form-select" id="signupRole">
+                  <option value="student">Student</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-gradient w-100 py-3">Sign Up</button>
+            </form>
+
+            <div class="text-center mt-4">
+              <a href="#" id="toggleAuthMode" class="text-decoration-none fw-bold" style="color: var(--accent-color);">Don't have an account? Sign Up</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN SYSTEM CONTAINER -->
+  <div id="view-admin-layout" class="view-section d-none">
+    <!-- Admin Sidebar -->
+    <nav id="adminSidebar" class="d-flex flex-column justify-content-between p-3">
+      <div>
+        <div class="d-flex align-items-center gap-3 mb-4 px-2">
+          <div class="avatar-sm"><i class="fas fa-shield-halved"></i></div>
+          <div>
+            <h6 class="mb-0 fw-bold">Admin Panel</h6>
+            <small class="text-secondary">MCQ Engine</small>
+          </div>
+        </div>
+        
+        <div class="d-flex flex-column gap-1">
+          <a href="#" class="nav-link-custom admin-nav-item active" data-target="admin-dashboard-sub"><i class="fas fa-chart-pie"></i> Dashboard</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-categories-sub"><i class="fas fa-tags"></i> Categories</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-subcategories-sub"><i class="fas fa-project-diagram"></i> Subcategories</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-questions-sub"><i class="fas fa-file-circle-question"></i> Questions</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-users-sub"><i class="fas fa-users-cog"></i> User Registry</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-comments-sub"><i class="fas fa-comments"></i> Moderation</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-reports-sub"><i class="fas fa-circle-exclamation"></i> Reports</a>
+          <a href="#" class="nav-link-custom admin-nav-item" data-target="admin-analytics-sub"><i class="fas fa-square-poll-vertical"></i> Advanced Analytics</a>
+        </div>
+      </div>
+
+      <div>
+        <hr class="text-muted">
+        <div class="d-flex align-items-center justify-content-between px-2 mb-3">
+          <span class="small text-secondary">Switch Theme</span>
+          <button class="btn btn-sm btn-outline-secondary theme-toggle-btn"><i class="fas fa-moon"></i></button>
+        </div>
+        <button class="btn btn-outline-danger w-100 auth-logout-btn"><i class="fas fa-sign-out-alt me-2"></i> Log Out</button>
+      </div>
+    </nav>
+
+    <!-- Admin Content Area -->
+    <div id="adminContentWrapper">
+      <!-- Admin Dynamic Navbar -->
+      <header class="navbar navbar-expand-lg border-bottom px-4 py-3 sticky-top" style="background: var(--bg-card); backdrop-filter: blur(8px);">
+        <div class="container-fluid gap-3">
+          <button class="btn btn-outline-secondary d-lg-none" id="adminSidebarToggle"><i class="fas fa-bars"></i></button>
+          
+          <!-- Global Search Container -->
+          <div class="position-relative flex-grow-1 max-w-400">
+            <div class="input-group">
+              <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search text-secondary"></i></span>
+              <input type="text" class="form-control border-start-0 global-search-input" placeholder="Realtime global search...">
+            </div>
+            <div class="search-results-overlay global-search-dropdown"></div>
+          </div>
+
+          <div class="d-flex align-items-center gap-3">
+            <div id="adminUserProfileHeader" class="text-end d-none d-sm-block">
+              <h6 class="mb-0 fw-bold" id="adminHeaderName">Administrator</h6>
+              <small class="text-success" id="adminHeaderRole">Active Session</small>
+            </div>
+            <div class="avatar-sm" id="adminHeaderAvatar">AD</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Nested Admin Dashboard Views -->
+      <main class="p-4">
+        <!-- 1. Admin Main Dashboard Inner View -->
+        <div id="admin-dashboard-sub" class="admin-subview">
+          <div class="row g-4 mb-4">
+            <div class="col-md-4 col-sm-6">
+              <div class="premium-card p-4 gradient-card-indigo">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-white-50">Total Registrants</h6>
+                    <h2 class="fw-bold mb-0" id="stat-total-users">0</h2>
+                  </div>
+                  <div class="fs-1 opacity-50"><i class="fas fa-users"></i></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <div class="premium-card p-4 gradient-card-purple">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-white-50">Active Categories</h6>
+                    <h2 class="fw-bold mb-0" id="stat-total-categories">0</h2>
+                  </div>
+                  <div class="fs-1 opacity-50"><i class="fas fa-tags"></i></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 col-sm-6">
+              <div class="premium-card p-4 gradient-card-emerald">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h6 class="text-white-50">Total Questions</h6>
+                    <h2 class="fw-bold mb-0" id="stat-total-questions">0</h2>
+                  </div>
+                  <div class="fs-1 opacity-50"><i class="fas fa-circle-question"></i></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Database Status Charts row -->
+          <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-4">Category Distribution</h5>
+                <div style="height: 300px;"><canvas id="adminPieChart"></canvas></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-4">Global Accuracy (Correct vs Wrong)</h5>
+                <div style="height: 300px;"><canvas id="adminDoughnutChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+          <div class="row g-4">
+            <div class="col-12">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-4">Quiz Attempts Activity</h5>
+                <div style="height: 300px;"><canvas id="adminAreaChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Admin Categories CRUD Subview -->
+        <div id="admin-categories-sub" class="admin-subview d-none">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Category Registry</h4>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="prepareCategoryModal()"><i class="fas fa-plus me-2"></i> Add Category</button>
+          </div>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Category Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="categoryTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Admin Subcategories CRUD Subview -->
+        <div id="admin-subcategories-sub" class="admin-subview d-none">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">Subcategory Registry</h4>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#subcategoryModal" onclick="prepareSubcategoryModal()"><i class="fas fa-plus me-2"></i> Add Subcategory</button>
+          </div>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Parent Category</th>
+                    <th>Subcategory Name</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="subcategoryTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Admin Questions CRUD Subview -->
+        <div id="admin-questions-sub" class="admin-subview d-none">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-bold mb-0">MCQ Database</h4>
+            <div class="d-flex gap-2">
+              <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#questionModal" onclick="prepareQuestionModal()"><i class="fas fa-plus me-2"></i> Create Question</button>
+              <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#bulkUploadModal"><i class="fas fa-file-upload me-2"></i> Bulk Import</button>
+            </div>
+          </div>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Question Context</th>
+                    <th>Taxonomy</th>
+                    <th>Difficulty</th>
+                    <th>Options Configuration</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="questionTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Admin Users Subview -->
+        <div id="admin-users-sub" class="admin-subview d-none">
+          <h4 class="fw-bold mb-4">System Identity Registry</h4>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>User Detail</th>
+                    <th>System Role</th>
+                    <th>Account Status</th>
+                    <th>Controls</th>
+                  </tr>
+                </thead>
+                <tbody id="usersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Admin Comments Subview -->
+        <div id="admin-comments-sub" class="admin-subview d-none">
+          <h4 class="fw-bold mb-4">Discussion Board Moderation</h4>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Commenter</th>
+                    <th>Comment Context</th>
+                    <th>Timestamp</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="commentsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Admin Reports Subview -->
+        <div id="admin-reports-sub" class="admin-subview d-none">
+          <h4 class="fw-bold mb-4">Moderation Flag Registry</h4>
+          <div class="premium-card p-4">
+            <div class="table-container">
+              <table class="table table-hover align-middle">
+                <thead>
+                  <tr>
+                    <th>Report Details</th>
+                    <th>Question Text</th>
+                    <th>Reason Given</th>
+                    <th>Resolution Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="reportsTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. Admin Advanced Analytics Subview -->
+        <div id="admin-analytics-sub" class="admin-subview d-none">
+          <h4 class="fw-bold mb-4">Database Activity Metrics</h4>
+          <div class="row g-4 mb-4">
+            <div class="col-lg-6">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-4">Questions Added Per Month</h5>
+                <div style="height: 300px;"><canvas id="analyticsBarChart"></canvas></div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-4">Daily Registration Trend</h5>
+                <div style="height: 300px;"><canvas id="analyticsLineChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- STUDENT SYSTEM CONTAINER -->
+  <div id="view-student-layout" class="view-section d-none">
+    <!-- Topbar Navigation for Student Workspace -->
+    <header class="navbar navbar-expand-lg border-bottom px-4 py-3 sticky-top" style="background: var(--bg-card); backdrop-filter: blur(8px); z-index: 999;">
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center gap-3" href="#">
+          <div class="avatar-sm"><i class="fas fa-graduation-cap"></i></div>
+          <div>
+            <h6 class="mb-0 fw-bold text-gradient">MCQ Student Sandbox</h6>
+            <small class="text-secondary">Self-Evaluation Center</small>
+          </div>
+        </a>
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#studentNavCollapse">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="studentNavCollapse">
+          <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-3 mt-3 mt-lg-0">
+            <!-- Global Search Box -->
+            <div class="position-relative">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search text-secondary"></i></span>
+                <input type="text" class="form-control border-start-0 global-search-input" placeholder="Search questions/categories...">
+              </div>
+              <div class="search-results-overlay global-search-dropdown"></div>
+            </div>
+
+            <!-- Student routes navigation -->
+            <div class="d-flex gap-2">
+              <a href="#" class="btn btn-outline-secondary student-nav-item active" data-target="student-dashboard-sub"><i class="fas fa-house me-2"></i> Dashboard</a>
+              <a href="#" class="btn btn-outline-secondary student-nav-item" data-target="student-browse-sub" onclick="renderStudentBrowse()"><i class="fas fa-book-open me-2"></i> Browse Material</a>
+              <a href="#" class="btn btn-outline-secondary student-nav-item" data-target="student-quiz-sub"><i class="fas fa-clock me-2"></i> Dynamic Quiz Engine</a>
+              <a href="#" class="btn btn-outline-secondary student-nav-item" data-target="student-profile-sub" onclick="renderStudentProfile()"><i class="fas fa-user-cog me-2"></i> User Profile</a>
+            </div>
+
+            <!-- Theme Toggle & Session Controls -->
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-sm btn-outline-secondary theme-toggle-btn"><i class="fas fa-moon"></i></button>
+              <button class="btn btn-gradient auth-logout-btn"><i class="fas fa-sign-out-alt me-2"></i> Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Student Dynamic Views Container -->
+    <main class="container py-5">
+      <!-- 1. Student Dashboard View -->
+      <div id="student-dashboard-sub" class="student-subview">
+        <div class="row g-4 mb-4">
+          <div class="col-md-3 col-sm-6">
+            <div class="premium-card p-4 gradient-card-indigo">
+              <h6 class="text-white-50">Exam Attempts</h6>
+              <h2 class="fw-bold mb-0" id="stud-total-attempts">0</h2>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="premium-card p-4 gradient-card-emerald">
+              <h6 class="text-white-50">Accurate Selections</h6>
+              <h2 class="fw-bold mb-0" id="stud-total-correct">0</h2>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="premium-card p-4 gradient-card-orange">
+              <h6 class="text-white-50">Incorrect Selections</h6>
+              <h2 class="fw-bold mb-0" id="stud-total-wrong">0</h2>
+            </div>
+          </div>
+          <div class="col-md-3 col-sm-6">
+            <div class="premium-card p-4 gradient-card-cyan">
+              <h6 class="text-white-50">Avg Score Percent</h6>
+              <h2 class="fw-bold mb-0" id="stud-avg-accuracy">0%</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="premium-card p-4">
+              <h5 class="fw-bold mb-4">My Category Distribution</h5>
+              <div style="height: 300px;"><canvas id="studentPieChart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="premium-card p-4">
+              <h5 class="fw-bold mb-4">Latest Performance Chart</h5>
+              <div style="height: 300px;"><canvas id="studentBarChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Browse Categories / Practice Mode Subview -->
+      <div id="student-browse-sub" class="student-subview d-none">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+          <div>
+            <h4 class="fw-bold mb-1">Knowledge Material Sandbox</h4>
+            <p class="text-secondary">Study and practice interactively at your own pace with detailed explanations.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <input type="text" id="practiceSearch" class="form-control" placeholder="Search practice material..." oninput="renderStudentBrowse()">
+            <select id="practiceDifficultyFilter" class="form-select" onchange="renderStudentBrowse()">
+              <option value="">All Difficulties</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Render categories card grid -->
+        <h5 class="fw-bold mb-3">Filter by Subject Taxonomy</h5>
+        <div class="row g-4 mb-4" id="practiceCategoryGrid"></div>
+
+        <!-- Interactive Question Detail & Practice Hub -->
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="premium-card p-4">
+              <h5 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
+                <span>Interactive Practice Sandbox</span>
+                <span class="badge bg-secondary" id="practiceCounter">Select a question below</span>
+              </h5>
+              <div id="practiceQuestionPane" class="py-3">
+                <p class="text-secondary text-center">Select an interactive question from the listing on the right to start your review...</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="premium-card p-4">
+              <h5 class="fw-bold mb-3">Available Study Questions</h5>
+              <div class="list-group list-group-flush" id="practiceQuestionsList" style="max-height: 400px; overflow-y: auto;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Dynamic Exam Engine Subview -->
+      <div id="student-quiz-sub" class="student-subview d-none">
+        <!-- Exam Startup Config Wizard -->
+        <div id="quizSetupWizard" class="premium-card p-5 max-w-600 mx-auto">
+          <h4 class="fw-bold text-center mb-4"><i class="fas fa-stopwatch me-2 text-warning"></i> Ready to Launch Dynamic Quiz Mode?</h4>
+          <div class="mb-3">
+            <label class="form-label text-secondary">Choose Evaluation Target</label>
+            <select class="form-select" id="quizSetupCategory">
+              <option value="">Assess Across All Subjects</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary">Question Scope Size</label>
+            <select class="form-select" id="quizSetupQuantity">
+              <option value="5">5 Questions</option>
+              <option value="10" selected>10 Questions</option>
+              <option value="20">20 Questions</option>
+              <option value="30">30 Questions</option>
+            </select>
+          </div>
+          <button class="btn btn-gradient w-100 py-3" onclick="initializeQuizMode()">Launch Live Timer Exam</button>
+        </div>
+
+        <!-- Real Active Quiz Workspace -->
+        <div id="quizExecutionWorkspace" class="d-none">
+          <div class="premium-card p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="fw-bold fs-5" id="quizCurrentProgress">Question 0 of 0</span>
+              <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-hourglass-half text-danger animate-pulse"></i>
+                <span class="badge bg-danger fs-6" id="quizTimeRemaining">00:00</span>
+              </div>
+            </div>
+            <div class="progress" style="height: 6px;">
+              <div id="quizProgressBar" class="progress-bar bg-success" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-lg-8">
+              <div class="premium-card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span class="badge bg-primary" id="quizQuestionCategory">Subject Target</span>
+                  <span class="badge bg-info" id="quizQuestionDifficulty">Difficulty</span>
+                </div>
+                <h4 class="fw-bold mb-4" id="quizQuestionText">Active Assessment Target Content</h4>
+                <div class="d-flex flex-column gap-3" id="quizOptionsContainer"></div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-secondary btn-lg" id="quizPrevBtn" onclick="quizNavigate(-1)"><i class="fas fa-arrow-left me-2"></i> Prev</button>
+                <button class="btn btn-outline-secondary btn-lg" id="quizNextBtn" onclick="quizNavigate(1)">Next <i class="fas fa-arrow-right ms-2"></i></button>
+                <button class="btn btn-success btn-lg" id="quizFinishBtn" onclick="submitFullExamResults()">Complete & Submit Exam</button>
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div class="premium-card p-4">
+                <h5 class="fw-bold mb-3">Evaluation Grid Map</h5>
+                <div class="row g-2" id="quizNavigationGrid"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Exam Workspace Feedback Summary -->
+        <div id="quizWorkspaceResults" class="premium-card p-5 max-w-700 mx-auto d-none text-center">
+          <div class="avatar-sm mx-auto mb-4" style="width: 80px; height: 80px; font-size: 32px;"><i class="fas fa-award"></i></div>
+          <h2 class="fw-bold mb-2">Quiz Finished!</h2>
+          <p class="text-secondary">Your evaluation has been successfully computed and archived directly to the Realtime Database.</p>
+          
+          <div class="row g-3 my-4">
+            <div class="col-4">
+              <h5 class="text-secondary mb-0">Total Score</h5>
+              <h3 class="fw-bold" id="quizResScore">0%</h3>
+            </div>
+            <div class="col-4">
+              <h5 class="text-secondary mb-0">Correct Answers</h5>
+              <h3 class="fw-bold text-success" id="quizResCorrect">0</h3>
+            </div>
+            <div class="col-4">
+              <h5 class="text-secondary mb-0">Wrong Answers</h5>
+              <h3 class="fw-bold text-danger" id="quizResWrong">0</h3>
+            </div>
+          </div>
+
+          <button class="btn btn-gradient px-5 py-3" onclick="resetQuizInterface()">Take Another Quiz</button>
+        </div>
+      </div>
+
+      <!-- 4. Student Settings / Profile Subview -->
+      <div id="student-profile-sub" class="student-subview d-none">
+        <div class="row g-4">
+          <div class="col-lg-4">
+            <div class="premium-card p-4 text-center">
+              <div class="avatar-sm mx-auto mb-3" style="width: 80px; height: 80px; font-size: 32px;">ST</div>
+              <h5 class="fw-bold mb-1" id="profileNameDisplay">Student User</h5>
+              <p class="text-secondary mb-3" id="profileEmailDisplay">student@mcq.com</p>
+              <span class="badge bg-info px-3 py-2">Role: Student</span>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="premium-card p-4">
+              <h5 class="fw-bold mb-4">Edit Profile & Password</h5>
+              <form id="profileUpdateForm">
+                <div class="mb-3">
+                  <label class="form-label text-secondary">Update Display Name</label>
+                  <input type="text" class="form-control" id="profileUpdateName" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label text-secondary">Set New Account Password (Optional)</label>
+                  <input type="password" class="form-control" id="profileUpdatePassword" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-gradient px-4 py-2">Save Profile Updates</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- CATEGORY MANAGEMENT MODAL -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="categoryModalTitle">Add New Category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="categoryForm">
+          <div class="modal-body">
+            <input type="hidden" id="categoryEditId">
+            <div class="mb-3">
+              <label class="form-label text-secondary">Category Name</label>
+              <input type="text" class="form-control" id="categoryName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary">Description</label>
+              <textarea class="form-control" id="categoryDescription" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-gradient">Save Category</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUBCATEGORY MANAGEMENT MODAL -->
+  <div class="modal fade" id="subcategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="subcategoryModalTitle">Add New Subcategory</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="subcategoryForm">
+          <div class="modal-body">
+            <input type="hidden" id="subcategoryEditId">
+            <div class="mb-3">
+              <label class="form-label text-secondary">Parent Category</label>
+              <select class="form-select" id="subcategoryParentCategory" required></select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary">Subcategory Name</label>
+              <input type="text" class="form-control" id="subcategoryName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-secondary">Description</label>
+              <textarea class="form-control" id="subcategoryDescription" rows="3" required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-gradient">Save Subcategory</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTION & OPTIONS MANAGEMENT MODAL -->
+  <div class="modal fade" id="questionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="questionModalTitle">Add New MCQ & Options</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="questionForm">
+          <div class="modal-body">
+            <input type="hidden" id="questionEditId">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-secondary">Parent Category</label>
+                <select class="form-select" id="questionCategory" required onchange="populateSubcategoryDropdown('questionSubcategory', this.value)"></select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-secondary">Subcategory</label>
+                <select class="form-select" id="questionSubcategory" required></select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-secondary">Question context text</label>
+              <textarea class="form-control" id="questionText" rows="3" required placeholder="Write question context..."></textarea>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label text-secondary">Difficulty Level</label>
+                <select class="form-select" id="questionDifficulty" required>
+                  <option value="easy">Easy</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-secondary">Solution Explanation</label>
+                <input type="text" class="form-control" id="questionExplanation" required placeholder="Describe the answer logic...">
+              </div>
+            </div>
+
+            <h6 class="fw-bold mb-3 text-gradient"><i class="fas fa-list-check me-2"></i> Options Configuration (At least one must be marked Correct)</h6>
+            <div class="row g-3">
+              <div class="col-12">
+                <div class="input-group">
+                  <span class="input-group-text"><input class="form-check-input" type="radio" name="correctOptionRadio" value="0" required checked></span>
+                  <input type="text" class="form-control" id="optVal0" placeholder="Option A Content" required>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-group">
+                  <span class="input-group-text"><input class="form-check-input" type="radio" name="correctOptionRadio" value="1" required></span>
+                  <input type="text" class="form-control" id="optVal1" placeholder="Option B Content" required>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-group">
+                  <span class="input-group-text"><input class="form-check-input" type="radio" name="correctOptionRadio" value="2" required></span>
+                  <input type="text" class="form-control" id="optVal2" placeholder="Option C Content" required>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="input-group">
+                  <span class="input-group-text"><input class="form-check-input" type="radio" name="correctOptionRadio" value="3" required></span>
+                  <input type="text" class="form-control" id="optVal3" placeholder="Option D Content" required>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-gradient">Save Question & Options</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BULK UPLOAD MODAL -->
+  <div class="modal fade" id="bulkUploadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Bulk Import Questions (JSON Format)</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label text-secondary">Target Category</label>
+            <select class="form-select" id="bulkCategory" required onchange="populateSubcategoryDropdown('bulkSubcategory', this.value)"></select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary">Subcategory</label>
+            <select class="form-select" id="bulkSubcategory" required></select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-secondary">JSON Input Data</label>
+            <textarea class="form-control" id="bulkJsonInput" rows="10" placeholder='[
+  {
+    "questionText": "What is 2 + 2?",
+    "difficulty": "easy",
+    "explanation": "Simple arithmetic addition",
+    "options": [
+      { "text": "3", "isCorrect": false },
+      { "text": "4", "isCorrect": true },
+      { "text": "5", "isCorrect": false },
+      { "text": "6", "isCorrect": false }
+    ]
+  }
+]'></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-gradient" onclick="executeBulkUpload()">Start Import Engine</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT PROBLEM MODAL -->
+  <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">Report Question Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="reportForm">
+          <div class="modal-body">
+            <input type="hidden" id="reportQuestionId">
+            <div class="mb-3">
+              <label class="form-label text-secondary">Reason for Flagging</label>
+              <textarea class="form-control" id="reportReason" rows="4" placeholder="Describe the inaccuracy or formatting error..." required></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">File Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Firebase & Core JS Modular Engine -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      push,
+      set,
+      update,
+      remove,
+      get,
+      onValue
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import {
+      getAuth,
+      createUserWithEmailAndPassword,
+      signInWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      updateProfile,
+      updatePassword
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // --------------------------------------------------
+    // REPLACE THE PLACEHOLDER BELOW WITH YOUR REAL FIREBASE WEB CONFIGURATION [1]
+    // --------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize application core
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // Global App State Cache
+    const state = {
+      user: null,
+      role: null,
+      categories: {},
+      subcategories: {},
+      questions: {},
+      options: {},
+      comments: {},
+      userAnswers: {},
+      quizAttempts: {},
+      reports: {},
+      users: {}
+    };
+
+    // Chart instances tracking
+    const charts = {
+      adminPie: null,
+      adminDoughnut: null,
+      adminArea: null,
+      analyticsBar: null,
+      analyticsLine: null,
+      studentPie: null,
+      studentBar: null
+    };
+
+    // Timer trackers
+    let quizTimerInterval = null;
+    let quizState = {
+      questions: [],
+      currentIdx: 0,
+      selectedAnswers: {}, // questionId: optionId
+      timeRemaining: 0,
+      categoryId: ""
+    };
+
+    // On Application Startup
+    window.addEventListener("DOMContentLoaded", () => {
+      setupAuthToggles();
+      setupThemeToggles();
+      setupMobileSidebars();
+      setupGlobalSearch();
+    });
+
+    // Handle authentication system logic
+    function setupAuthToggles() {
+      const toggleBtn = document.getElementById("toggleAuthMode");
+      const loginForm = document.getElementById("loginForm");
+      const signupForm = document.getElementById("signupForm");
+      const authTitle = document.getElementById("authTitle");
+      const authSubtitle = document.getElementById("authSubtitle");
+
+      toggleBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (loginForm.classList.contains("d-none")) {
+          loginForm.classList.remove("d-none");
+          signupForm.classList.add("d-none");
+          authTitle.innerText = "Sign In";
+          authSubtitle.innerText = "Access your testing portal";
+          toggleBtn.innerText = "Don't have an account? Sign Up";
+        } else {
+          loginForm.classList.add("d-none");
+          signupForm.classList.remove("d-none");
+          authTitle.innerText = "Create Account";
+          authSubtitle.innerText = "Get started inside the sandbox";
+          toggleBtn.innerText = "Already registered? Sign In";
+        }
+      });
+    }
+
+    // Modern SaaS Theme Switching Engine
+    function setupThemeToggles() {
+      const darkThemeClass = "dark-theme";
+      const currentTheme = localStorage.getItem("theme") || "light";
+      
+      if (currentTheme === "dark") {
+        document.body.classList.add(darkThemeClass);
+        updateThemeToggleIcons(true);
+      }
+
+      document.querySelectorAll(".theme-toggle-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const isDarkNow = document.body.classList.toggle(darkThemeClass);
+          localStorage.setItem("theme", isDarkNow ? "dark" : "light");
+          updateThemeToggleIcons(isDarkNow);
+        });
+      });
+    }
+
+    function updateThemeToggleIcons(isDark) {
+      document.querySelectorAll(".theme-toggle-btn").forEach(btn => {
+        btn.innerHTML = isDark ? '<i class="fas fa-sun text-warning"></i>' : '<i class="fas fa-moon"></i>';
+      });
+    }
+
+    function setupMobileSidebars() {
+      const toggle = document.getElementById("adminSidebarToggle");
+      const sidebar = document.getElementById("adminSidebar");
+      if (toggle && sidebar) {
+        toggle.addEventListener("click", () => {
+          sidebar.classList.toggle("active");
+        });
+      }
+    }
+
+    // --------------------------------------------------
+    // AUTHENTICATION FLOW STATE MACHINE
+    // --------------------------------------------------
+    onAuthStateChanged(auth, async (firebaseUser) => {
+      const loader = document.getElementById("loaderOverlay");
+      if (firebaseUser) {
+        state.user = firebaseUser;
+        // Query user record directly from Database node for Role validation
+        const userRef = ref(db, `users/${firebaseUser.uid}`);
+        const snap = await get(userRef);
+        
+        if (snap.exists()) {
+          const profile = snap.val();
+          state.role = profile.role || "student";
+          if (profile.status === "inactive") {
+            await signOut(auth);
+            Swal.fire("Access Suspended", "This profile has been deactivated by administrator.", "error");
+            showView("view-auth");
+            loader.style.opacity = 0;
+            setTimeout(() => loader.style.display = "none", 500);
+            return;
+          }
+        } else {
+          // Fallback context validation (e.g. initial Google signups or direct tests)
+          state.role = "student";
+          await set(userRef, {
+            name: firebaseUser.displayName || "Testing Account",
+            email: firebaseUser.email,
+            role: "student",
+            status: "active"
+          });
+        }
+        
+        // Start live real-time listeners synchronized dynamically
+        initializeRealtimeSync();
+      } else {
+        state.user = null;
+        state.role = null;
+        showView("view-auth");
+        loader.style.opacity = 0;
+        setTimeout(() => loader.style.display = "none", 500);
+      }
+    });
+
+    // Login logic
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("loginEmail").value;
+      const pass = document.getElementById("loginPassword").value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        Swal.fire("Welcome Back!", "Dynamic dashboard synchronized successfully.", "success");
+      } catch (err) {
+        Swal.fire("Auth Failure", err.message, "error");
+      }
+    });
+
+    // Registry / signup logic
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("signupName").value;
+      const email = document.getElementById("signupEmail").value;
+      const pass = document.getElementById("signupPassword").value;
+      const confirm = document.getElementById("signupConfirmPassword").value;
+      const role = document.getElementById("signupRole").value;
+
+      if (pass !== confirm) {
+        return Swal.fire("Input Error", "Confirm password matches verification failed.", "error");
+      }
+
+      try {
+        const credentials = await createUserWithEmailAndPassword(auth, email, pass);
+        // Write the corresponding database record synchronously to avoid placeholder state
+        await set(ref(db, `users/${credentials.user.uid}`), {
+          name: name,
+          email: email,
+          role: role,
+          status: "active"
+        });
+        Swal.fire("Account Verified", "Sandbox credentials registered successfully.", "success");
+      } catch (err) {
+        Swal.fire("Signup Failed", err.message, "error");
+      }
+    });
+
+    // Logging out
+    document.querySelectorAll(".auth-logout-btn").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        await signOut(auth);
+        Swal.fire("Logged Out", "Authentication context has been destroyed safely.", "info");
+      });
+    });
+
+    // Dynamic dynamic view router
+    function showView(viewId) {
+      document.querySelectorAll(".view-section").forEach(s => s.classList.add("d-none"));
+      const activeView = document.getElementById(viewId);
+      if (activeView) activeView.classList.remove("d-none");
+    }
+
+    // --------------------------------------------------
+    // SYSTEM REALTIME DATA LISTENERS [1]
+    // --------------------------------------------------
+    function initializeRealtimeSync() {
+      const nodes = [
+        "users", "categories", "subcategories", "questions",
+        "options", "comments", "userAnswers", "quizAttempts", "reports"
+      ];
+      let pendingNodesCount = nodes.length;
+
+      nodes.forEach(node => {
+        onValue(ref(db, node), (snapshot) => {
+          state[node] = snapshot.val() || {};
+          
+          if (pendingNodesCount > 0) {
+            pendingNodesCount--;
+            if (pendingNodesCount === 0) {
+              const loader = document.getElementById("loaderOverlay");
+              loader.style.opacity = 0;
+              setTimeout(() => loader.style.display = "none", 500);
+            }
+          }
+          
+          // Refresh views depending on current role context
+          if (state.role === "admin") {
+            showView("view-admin-layout");
+            triggerAdminWorkspaceRenders();
+          } else {
+            showView("view-student-layout");
+            triggerStudentWorkspaceRenders();
+          }
+        });
+      });
+    }
+
+    // --------------------------------------------------
+    // STUDENT INTERFACE OPERATIONS
+    // --------------------------------------------------
+    function triggerStudentWorkspaceRenders() {
+      // Refresh profile data
+      const nameEl = document.getElementById("profileNameDisplay");
+      if (nameEl && state.user) {
+        const userProfile = state.users[state.user.uid] || {};
+        nameEl.innerText = userProfile.name || state.user.displayName || "Active Student";
+        document.getElementById("profileEmailDisplay").innerText = state.user.email;
+        document.getElementById("profileUpdateName").value = userProfile.name || "";
+      }
+
+      // Compute student metrics
+      const attemptsArray = Object.values(state.quizAttempts).filter(a => a.userId === state.user?.uid);
+      const answersArray = Object.values(state.userAnswers).filter(a => a.userId === state.user?.uid);
+
+      const totalAttempts = attemptsArray.length;
+      const totalCorrect = answersArray.filter(a => a.isCorrect === true).length;
+      const totalWrong = answersArray.filter(a => a.isCorrect === false).length;
+      
+      const accuracyPercent = totalAttempts > 0 
+        ? Math.round((attemptsArray.reduce((acc, curr) => acc + Number(curr.score), 0) / totalAttempts)) 
+        : 0;
+
+      document.getElementById("stud-total-attempts").innerText = totalAttempts;
+      document.getElementById("stud-total-correct").innerText = totalCorrect;
+      document.getElementById("stud-total-wrong").innerText = totalWrong;
+      document.getElementById("stud-avg-accuracy").innerText = `${accuracyPercent}%`;
+
+      // Build dropdown configs
+      populateEvaluationWizardDropdowns();
+      
+      // Update local student charts
+      renderStudentCharts(attemptsArray, answersArray);
+    }
+
+    function renderStudentCharts(attempts, answers) {
+      const pieCtx = document.getElementById("studentPieChart");
+      const barCtx = document.getElementById("studentBarChart");
+      if (!pieCtx || !barCtx) return;
+
+      // Group corrects vs wrongs [1]
+      const correctAnswers = answers.filter(a => a.isCorrect === true).length;
+      const wrongAnswers = answers.filter(a => a.isCorrect === false).length;
+
+      if (charts.studentPie) charts.studentPie.destroy();
+      charts.studentPie = new Chart(pieCtx, {
+        type: "pie",
+        data: {
+          labels: ["Correct Choices", "Incorrect Choices"],
+          datasets: [{
+            data: [correctAnswers, wrongAnswers],
+            backgroundColor: ["#10b981", "#ef4444"],
+            borderWidth: 0
+          }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+      });
+
+      // Show attempt scores progression bar
+      const barLabels = attempts.map((a, i) => `Exam #${i+1}`);
+      const barData = attempts.map(a => a.score);
+
+      if (charts.studentBar) charts.studentBar.destroy();
+      charts.studentBar = new Chart(barCtx, {
+        type: "bar",
+        data: {
+          labels: barLabels.slice(-10),
+          datasets: [{
+            label: "Assessment Score (%)",
+            data: barData.slice(-10),
+            backgroundColor: "#6366f1",
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { min: 0, max: 100 } }
+        }
+      });
+    }
+
+    function populateEvaluationWizardDropdowns() {
+      const select = document.getElementById("quizSetupCategory");
+      if (!select) return;
+      select.innerHTML = '<option value="">Assess Across All Subjects</option>';
+      Object.keys(state.categories).forEach(id => {
+        const cat = state.categories[id];
+        if (cat.status) {
+          select.innerHTML += `<option value="${id}">${cat.name}</option>`;
+        }
+      });
+    }
+
+    // Dynamic Navigation between Student views
+    document.querySelectorAll(".student-nav-item").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".student-nav-item").forEach(item => item.classList.remove("active"));
+        el.classList.add("active");
+        
+        const target = el.getAttribute("data-target");
+        document.querySelectorAll(".student-subview").forEach(sv => sv.classList.add("d-none"));
+        document.getElementById(target).classList.remove("d-none");
+      });
+    });
+
+    // --------------------------------------------------
+    // STUDENT INTERACTIVE PRACTICE MODE
+    // --------------------------------------------------
+    window.renderStudentBrowse = function() {
+      const catGrid = document.getElementById("practiceCategoryGrid");
+      const filterDiff = document.getElementById("practiceDifficultyFilter").value;
+      const searchVal = document.getElementById("practiceSearch").value.toLowerCase();
+      
+      catGrid.innerHTML = "";
+
+      // List Category Cards with Question count
+      Object.keys(state.categories).forEach(catId => {
+        const cat = state.categories[catId];
+        const qCount = Object.values(state.questions).filter(q => q.categoryId === catId).length;
+
+        catGrid.innerHTML += `
+          <div class="col-md-4">
+            <div class="premium-card p-4 h-100 cursor-pointer" onclick="loadPracticeQuestions('${catId}')">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-gradient mb-0">${cat.name}</h5>
+                <span class="badge bg-primary rounded-pill">${qCount} MCQs</span>
+              </div>
+              <p class="text-secondary small mb-0">${cat.description || "Interactive dynamic tests."}</p>
+            </div>
+          </div>
+        `;
+      });
+    };
+
+    window.loadPracticeQuestions = function(categoryId) {
+      const listEl = document.getElementById("practiceQuestionsList");
+      listEl.innerHTML = "";
+      
+      const catQuestions = Object.keys(state.questions).filter(qId => {
+        const q = state.questions[qId];
+        return q.categoryId === categoryId;
+      });
+
+      if (catQuestions.length === 0) {
+        listEl.innerHTML = '<div class="text-muted text-center p-3">No questions found inside this category.</div>';
+        return;
+      }
+
+      catQuestions.forEach(qId => {
+        const q = state.questions[qId];
+        listEl.innerHTML += `
+          <a href="#" class="list-group-item list-group-item-action border-0 py-3 px-2 rounded mb-2" onclick="loadInteractivePracticeQuestion('${qId}')">
+            <div class="d-flex justify-content-between">
+              <strong class="text-truncate" style="max-width: 200px;">${q.questionText}</strong>
+              <span class="badge bg-secondary">${q.difficulty.toUpperCase()}</span>
+            </div>
+          </a>
+        `;
+      });
+    };
+
+    window.loadInteractivePracticeQuestion = function(questionId) {
+      const q = state.questions[questionId];
+      const qOptions = Object.keys(state.options).filter(oId => state.options[oId].questionId === questionId);
+      const pane = document.getElementById("practiceQuestionPane");
+
+      pane.innerHTML = `
+        <div class="mb-3">
+          <span class="badge bg-warning mb-2">${q.difficulty.toUpperCase()}</span>
+          <h4 class="fw-bold mb-4">${q.questionText}</h4>
+        </div>
+        <div class="d-flex flex-column gap-3 mb-4" id="practiceOptsContainer"></div>
+        <div class="d-none p-3 mb-4 rounded" id="practiceExplanationAlert" style="background: rgba(99, 102, 241, 0.08);">
+          <strong class="text-gradient">Solution Explanation:</strong>
+          <p class="mb-0 text-secondary mt-1">${q.explanation || "No explanation provided."}</p>
+        </div>
+        <hr>
+        <div class="mt-4">
+          <h5 class="fw-bold mb-3"><i class="fas fa-comments me-2"></i> Discussions</h5>
+          <div id="practiceCommentsContainer" class="mb-3" style="max-height: 250px; overflow-y: auto;"></div>
+          <div class="input-group">
+            <input type="text" id="newCommentText" class="form-control" placeholder="Write a comment...">
+            <button class="btn btn-gradient" onclick="postPracticeComment('${questionId}')">Post</button>
+          </div>
+          <div class="mt-3 text-end">
+            <button class="btn btn-sm btn-outline-danger" onclick="openReportModal('${questionId}')"><i class="fas fa-flag me-1"></i> Report Error</button>
+          </div>
+        </div>
+      `;
+
+      // Render options with choice event
+      const optsContainer = document.getElementById("practiceOptsContainer");
+      qOptions.forEach(optId => {
+        const opt = state.options[optId];
+        const el = document.createElement("div");
+        el.className = "option-pill d-flex justify-content-between align-items-center";
+        el.innerHTML = `<span>${opt.optionText}</span> <i class="fas fa-circle-question opacity-50"></i>`;
+        
+        el.addEventListener("click", () => {
+          // Reveal correct/wrong options immediately in Practice Mode
+          document.querySelectorAll("#practiceOptsContainer .option-pill").forEach(pill => {
+            pill.style.pointerEvents = "none";
+          });
+          
+          if (opt.isCorrect) {
+            el.classList.add("correct");
+            el.innerHTML = `<span>${opt.optionText}</span> <i class="fas fa-circle-check"></i>`;
+          } else {
+            el.classList.add("incorrect");
+            el.innerHTML = `<span>${opt.optionText}</span> <i class="fas fa-circle-xmark"></i>`;
+            // Highlight correct answer
+            qOptions.forEach((chkId, idx) => {
+              if (state.options[chkId].isCorrect) {
+                const corrPill = optsContainer.children[idx];
+                corrPill.classList.add("correct");
+                corrPill.innerHTML = `<span>${state.options[chkId].optionText}</span> <i class="fas fa-circle-check"></i>`;
+              }
+            });
+          }
+
+          document.getElementById("practiceExplanationAlert").classList.remove("d-none");
+          
+          // Log standard practicing record contextually [1]
+          push(ref(db, "userAnswers"), {
+            userId: state.user.uid,
+            questionId: questionId,
+            selectedOptionId: optId,
+            isCorrect: opt.isCorrect,
+            answeredAt: new Date().toISOString()
+          });
+        });
+
+        optsContainer.appendChild(el);
+      });
+
+      renderPracticeComments(questionId);
+    };
+
+    function renderPracticeComments(questionId) {
+      const container = document.getElementById("practiceCommentsContainer");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const activeComments = Object.keys(state.comments).filter(cId => state.comments[cId].questionId === questionId);
+      
+      if (activeComments.length === 0) {
+        container.innerHTML = '<p class="text-secondary small italic text-center my-3">No discussion posted yet. Be the first!</p>';
+        return;
+      }
+
+      activeComments.forEach(cId => {
+        const comment = state.comments[cId];
+        const commenter = state.users[comment.userId]?.name || "Student";
+        const isOwn = comment.userId === state.user?.uid;
+
+        container.innerHTML += `
+          <div class="d-flex justify-content-between align-items-start p-2 border-bottom">
+            <div>
+              <strong class="small d-block text-primary">${commenter}</strong>
+              <span class="text-secondary small">${comment.commentText}</span>
+            </div>
+            ${isOwn ? `<button class="btn btn-sm btn-link text-danger" onclick="deletePracticeComment('${cId}', '${questionId}')"><i class="fas fa-trash-can"></i></button>` : ""}
+          </div>
+        `;
+      });
+    }
+
+    window.postPracticeComment = function(questionId) {
+      const commentText = document.getElementById("newCommentText").value.trim();
+      if (!commentText) return;
+
+      push(ref(db, "comments"), {
+        questionId: questionId,
+        userId: state.user.uid,
+        commentText: commentText,
+        createdAt: new Date().toISOString()
+      }).then(() => {
+        document.getElementById("newCommentText").value = "";
+        renderPracticeComments(questionId);
+      });
+    };
+
+    window.deletePracticeComment = function(commentId, questionId) {
+      Swal.fire({
+        title: "Delete Comment?",
+        text: "Are you sure you want to delete your post?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Delete"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          remove(ref(db, `comments/${commentId}`)).then(() => {
+            renderPracticeComments(questionId);
+            Swal.fire("Deleted", "Your comment was removed.", "success");
+          });
+        }
+      });
+    };
+
+    window.openReportModal = function(questionId) {
+      document.getElementById("reportQuestionId").value = questionId;
+      document.getElementById("reportReason").value = "";
+      const modal = new bootstrap.Modal(document.getElementById("reportModal"));
+      modal.show();
+    };
+
+    document.getElementById("reportForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const qId = document.getElementById("reportQuestionId").value;
+      const reason = document.getElementById("reportReason").value;
+
+      push(ref(db, "reports"), {
+        questionId: qId,
+        userId: state.user.uid,
+        reason: reason,
+        status: "pending"
+      }).then(() => {
+        bootstrap.Modal.getInstance(document.getElementById("reportModal")).hide();
+        Swal.fire("Report Filed", "A moderator will review this question context.", "success");
+      });
+    });
+
+    // --------------------------------------------------
+    // STUDENT TIMED QUIZ MODE ENGINE
+    // --------------------------------------------------
+    window.initializeQuizMode = function() {
+      const catVal = document.getElementById("quizSetupCategory").value;
+      const qtyVal = Number(document.getElementById("quizSetupQuantity").value);
+
+      // Filter appropriate active pool [1]
+      let pool = Object.keys(state.questions);
+      if (catVal) {
+        pool = pool.filter(qId => state.questions[qId].categoryId === catVal);
+      }
+
+      if (pool.length === 0) {
+        return Swal.fire("Evaluation Unavailable", "No active questions found inside this configuration criteria.", "error");
+      }
+
+      // Shuffle and slice
+      pool.sort(() => 0.5 - Math.random());
+      const selected = pool.slice(0, qtyVal);
+
+      // Start Quiz State
+      quizState = {
+        questions: selected,
+        currentIdx: 0,
+        selectedAnswers: {},
+        timeRemaining: selected.length * 60, // 60s per question
+        categoryId: catVal || "global"
+      };
+
+      document.getElementById("quizSetupWizard").classList.add("d-none");
+      document.getElementById("quizExecutionWorkspace").classList.remove("d-none");
+      document.getElementById("quizWorkspaceResults").classList.add("d-none");
+
+      startQuizTimer();
+      renderQuizQuestion();
+      renderQuizNavigationGrid();
+    };
+
+    function startQuizTimer() {
+      clearInterval(quizTimerInterval);
+      const timerEl = document.getElementById("quizTimeRemaining");
+      
+      quizTimerInterval = setInterval(() => {
+        if (quizState.timeRemaining <= 0) {
+          clearInterval(quizTimerInterval);
+          submitFullExamResults();
+          Swal.fire("Time Expired", "Your assessment was submitted automatically.", "warning");
+          return;
+        }
+        quizState.timeRemaining--;
+        const mins = Math.floor(quizState.timeRemaining / 60).toString().padStart(2, "0");
+        const secs = (quizState.timeRemaining % 60).toString().padStart(2, "0");
+        timerEl.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function renderQuizQuestion() {
+      const activeQId = quizState.questions[quizState.currentIdx];
+      const q = state.questions[activeQId];
+      
+      document.getElementById("quizCurrentProgress").innerText = `Question ${quizState.currentIdx + 1} of ${quizState.questions.length}`;
+      document.getElementById("quizProgressBar").style.width = `${((quizState.currentIdx + 1) / quizState.questions.length) * 100}%`;
+      
+      const categoryName = state.categories[q.categoryId]?.name || "General";
+      document.getElementById("quizQuestionCategory").innerText = categoryName;
+      document.getElementById("quizQuestionDifficulty").innerText = q.difficulty.toUpperCase();
+      document.getElementById("quizQuestionText").innerText = q.questionText;
+
+      const optsContainer = document.getElementById("quizOptionsContainer");
+      optsContainer.innerHTML = "";
+
+      // Match child options from schema state
+      const opts = Object.keys(state.options).filter(oId => state.options[oId].questionId === activeQId);
+      
+      opts.forEach(optId => {
+        const opt = state.options[optId];
+        const el = document.createElement("div");
+        el.className = `option-pill ${quizState.selectedAnswers[activeQId] === optId ? "selected" : ""}`;
+        el.innerText = opt.optionText;
+        
+        el.addEventListener("click", () => {
+          quizState.selectedAnswers[activeQId] = optId;
+          renderQuizQuestion();
+          renderQuizNavigationGrid();
+        });
+        optsContainer.appendChild(el);
+      });
+
+      // Update control visibility
+      document.getElementById("quizPrevBtn").disabled = quizState.currentIdx === 0;
+      document.getElementById("quizNextBtn").disabled = quizState.currentIdx === quizState.questions.length - 1;
+    }
+
+    function renderQuizNavigationGrid() {
+      const container = document.getElementById("quizNavigationGrid");
+      container.innerHTML = "";
+
+      quizState.questions.forEach((qId, idx) => {
+        const answered = quizState.selectedAnswers[qId] !== undefined;
+        const active = idx === quizState.currentIdx;
+        const btn = document.createElement("button");
+        btn.className = `col-3 btn m-1 ${active ? "btn-primary" : answered ? "btn-success" : "btn-outline-secondary"}`;
+        btn.innerText = idx + 1;
+        btn.addEventListener("click", () => {
+          quizState.currentIdx = idx;
+          renderQuizQuestion();
+          renderQuizNavigationGrid();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    window.quizNavigate = function(direction) {
+      quizState.currentIdx += direction;
+      renderQuizQuestion();
+      renderQuizNavigationGrid();
+    };
+
+    window.submitFullExamResults = async function() {
+      clearInterval(quizTimerInterval);
+      let correctCount = 0;
+      let wrongCount = 0;
+
+      // Iterate questions, compile scores
+      quizState.questions.forEach(qId => {
+        const selectedOptId = quizState.selectedAnswers[qId];
+        if (selectedOptId) {
+          const opt = state.options[selectedOptId];
+          if (opt && opt.isCorrect) {
+            correctCount++;
+          } else {
+            wrongCount++;
+          }
+          // Log dynamic userAnswers record node synchronously [1]
+          push(ref(db, "userAnswers"), {
+            userId: state.user.uid,
+            questionId: qId,
+            selectedOptionId: selectedOptId,
+            isCorrect: opt ? opt.isCorrect : false,
+            answeredAt: new Date().toISOString()
+          });
+        } else {
+          wrongCount++;
+        }
+      });
+
+      const totalQuestions = quizState.questions.length;
+      const calculatedScore = Math.round((correctCount / totalQuestions) * 100);
+
+      // Write results snapshot to database attempt table [1]
+      await push(ref(db, "quizAttempts"), {
+        userId: state.user.uid,
+        categoryId: quizState.categoryId,
+        score: calculatedScore,
+        totalQuestions: totalQuestions,
+        correctAnswers: correctCount,
+        wrongAnswers: wrongCount,
+        date: new Date().toISOString()
+      });
+
+      // Show results interface
+      document.getElementById("quizExecutionWorkspace").classList.add("d-none");
+      const resultsView = document.getElementById("quizWorkspaceResults");
+      resultsView.classList.remove("d-none");
+
+      document.getElementById("quizResScore").innerText = `${calculatedScore}%`;
+      document.getElementById("quizResCorrect").innerText = correctCount;
+      document.getElementById("quizResWrong").innerText = wrongCount;
+    };
+
+    window.resetQuizInterface = function() {
+      document.getElementById("quizSetupWizard").classList.remove("d-none");
+      document.getElementById("quizExecutionWorkspace").classList.add("d-none");
+      document.getElementById("quizWorkspaceResults").classList.add("d-none");
+    };
+
+    window.renderStudentProfile = function() {
+      if (!state.user) return;
+      const userProfile = state.users[state.user.uid] || {};
+      document.getElementById("profileUpdateName").value = userProfile.name || "";
+    };
+
+    document.getElementById("profileUpdateForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const newName = document.getElementById("profileUpdateName").value.trim();
+      const newPass = document.getElementById("profileUpdatePassword").value;
+
+      try {
+        await updateProfile(auth.currentUser, { displayName: newName });
+        await update(ref(db, `users/${state.user.uid}`), { name: newName });
+        
+        if (newPass) {
+          await updatePassword(auth.currentUser, newPass);
+        }
+
+        Swal.fire("Profile Updated", "Security profile saved to system.", "success");
+      } catch (err) {
+        Swal.fire("Sync Error", err.message, "error");
+      }
+    });
+
+    // --------------------------------------------------
+    // ADMIN WORKSPACE CONTROLLERS
+    // --------------------------------------------------
+    function triggerAdminWorkspaceRenders() {
+      // Profile data
+      const adminName = state.users[state.user?.uid]?.name || "Administrator";
+      document.getElementById("adminHeaderName").innerText = adminName;
+      document.getElementById("adminHeaderAvatar").innerText = adminName.substring(0, 2).toUpperCase();
+
+      // Calculations for Admin Analytics & Cards [1]
+      const totalUsers = Object.keys(state.users).length;
+      const totalCategories = Object.keys(state.categories).length;
+      const totalQuestions = Object.keys(state.questions).length;
+
+      document.getElementById("stat-total-users").innerText = totalUsers;
+      document.getElementById("stat-total-categories").innerText = totalCategories;
+      document.getElementById("stat-total-questions").innerText = totalQuestions;
+
+      // Refresh dynamic admin tables
+      renderCategoryTable();
+      renderSubcategoryTable();
+      renderQuestionTable();
+      renderUsersTable();
+      renderCommentsTable();
+      renderReportsTable();
+
+      // Refresh Charting data inside Admin & Analytics views [1]
+      updateAdminChartsData();
+    }
+
+    // Dynamic Navigation between Admin views
+    document.querySelectorAll(".admin-nav-item").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.querySelectorAll(".admin-nav-item").forEach(item => item.classList.remove("active"));
+        el.classList.add("active");
+        
+        const target = el.getAttribute("data-target");
+        document.querySelectorAll(".admin-subview").forEach(sv => sv.classList.add("d-none"));
+        document.getElementById(target).classList.remove("d-none");
+      });
+    });
+
+    // 1. Admin Category CRUD implementation [1]
+    function renderCategoryTable() {
+      const tbody = document.getElementById("categoryTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.categories).forEach(id => {
+        const cat = state.categories[id];
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${cat.name}</strong></td>
+            <td>${cat.description || "N/A"}</td>
+            <td><span class="badge ${cat.status ? 'bg-success' : 'bg-danger'}">${cat.status ? 'Active' : 'Disabled'}</span></td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" onclick="editCategory('${id}')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteCategory('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.prepareCategoryModal = function() {
+      document.getElementById("categoryForm").reset();
+      document.getElementById("categoryEditId").value = "";
+      document.getElementById("categoryModalTitle").innerText = "Add New Category";
+    };
+
+    window.editCategory = function(id) {
+      const cat = state.categories[id];
+      document.getElementById("categoryEditId").value = id;
+      document.getElementById("categoryName").value = cat.name;
+      document.getElementById("categoryDescription").value = cat.description;
+      document.getElementById("categoryModalTitle").innerText = "Edit Category Details";
+      new bootstrap.Modal(document.getElementById("categoryModal")).show();
+    };
+
+    document.getElementById("categoryForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = document.getElementById("categoryEditId").value;
+      const name = document.getElementById("categoryName").value;
+      const desc = document.getElementById("categoryDescription").value;
+
+      const payload = {
+        name: name,
+        description: desc,
+        status: true,
+        createdAt: new Date().toISOString()
+      };
+
+      if (id) {
+        update(ref(db, `categories/${id}`), payload).then(() => {
+          bootstrap.Modal.getInstance(document.getElementById("categoryModal")).hide();
+          Swal.fire("Updated", "Category edited successfully.", "success");
+        });
+      } else {
+        push(ref(db, "categories"), payload).then(() => {
+          bootstrap.Modal.getInstance(document.getElementById("categoryModal")).hide();
+          Swal.fire("Added", "New category published successfully.", "success");
+        });
+      }
+    });
+
+    window.deleteCategory = function(id) {
+      Swal.fire({
+        title: "Delete Category?",
+        text: "Removing this category may impact connected questions and analytics.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Confirm Delete"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          remove(ref(db, `categories/${id}`)).then(() => {
+            Swal.fire("Deleted", "Category has been removed.", "success");
+          });
+        }
+      });
+    };
+
+    // 2. Admin Subcategory CRUD implementation [1]
+    function renderSubcategoryTable() {
+      const tbody = document.getElementById("subcategoryTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.subcategories).forEach(id => {
+        const sub = state.subcategories[id];
+        const parentName = state.categories[sub.categoryId]?.name || "Unknown Parent";
+        tbody.innerHTML += `
+          <tr>
+            <td>${parentName}</td>
+            <td><strong>${sub.name}</strong></td>
+            <td>${sub.description || "N/A"}</td>
+            <td><span class="badge ${sub.status ? 'bg-success' : 'bg-danger'}">${sub.status ? 'Active' : 'Disabled'}</span></td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" onclick="editSubcategory('${id}')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteSubcategory('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.prepareSubcategoryModal = function() {
+      document.getElementById("subcategoryForm").reset();
+      document.getElementById("subcategoryEditId").value = "";
+      document.getElementById("subcategoryModalTitle").innerText = "Add New Subcategory";
+      populateCategoryDropdown("subcategoryParentCategory");
+    };
+
+    window.editSubcategory = function(id) {
+      const sub = state.subcategories[id];
+      document.getElementById("subcategoryEditId").value = id;
+      populateCategoryDropdown("subcategoryParentCategory", sub.categoryId);
+      document.getElementById("subcategoryName").value = sub.name;
+      document.getElementById("subcategoryDescription").value = sub.description;
+      document.getElementById("subcategoryModalTitle").innerText = "Edit Subcategory Details";
+      new bootstrap.Modal(document.getElementById("subcategoryModal")).show();
+    };
+
+    document.getElementById("subcategoryForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = document.getElementById("subcategoryEditId").value;
+      const catId = document.getElementById("subcategoryParentCategory").value;
+      const name = document.getElementById("subcategoryName").value;
+      const desc = document.getElementById("subcategoryDescription").value;
+
+      const payload = {
+        categoryId: catId,
+        name: name,
+        description: desc,
+        status: true
+      };
+
+      if (id) {
+        update(ref(db, `subcategories/${id}`), payload).then(() => {
+          bootstrap.Modal.getInstance(document.getElementById("subcategoryModal")).hide();
+          Swal.fire("Updated", "Subcategory has been modified.", "success");
+        });
+      } else {
+        push(ref(db, "subcategories"), payload).then(() => {
+          bootstrap.Modal.getInstance(document.getElementById("subcategoryModal")).hide();
+          Swal.fire("Added", "Subcategory added directly.", "success");
+        });
+      }
+    });
+
+    window.deleteSubcategory = function(id) {
+      Swal.fire({
+        title: "Delete Subcategory?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Delete"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          remove(ref(db, `subcategories/${id}`)).then(() => {
+            Swal.fire("Deleted", "Subcategory successfully removed.", "success");
+          });
+        }
+      });
+    };
+
+    function populateCategoryDropdown(elementId, selectedId = "") {
+      const select = document.getElementById(elementId);
+      if (!select) return;
+      select.innerHTML = '<option value="">Select Category Parent</option>';
+      Object.keys(state.categories).forEach(id => {
+        select.innerHTML += `<option value="${id}" ${id === selectedId ? 'selected' : ''}>${state.categories[id].name}</option>`;
+      });
+    }
+
+    function populateSubcategoryDropdown(elementId, categoryId, selectedId = "") {
+      const select = document.getElementById(elementId);
+      if (!select) return;
+      select.innerHTML = '<option value="">Select Subcategory</option>';
+      Object.keys(state.subcategories).forEach(id => {
+        const sub = state.subcategories[id];
+        if (sub.categoryId === categoryId) {
+          select.innerHTML += `<option value="${id}" ${id === selectedId ? 'selected' : ''}>${sub.name}</option>`;
+        }
+      });
+    }
+
+    // 3. Question & Options management nested configuration [1]
+    function renderQuestionTable() {
+      const tbody = document.getElementById("questionTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.questions).forEach(id => {
+        const q = state.questions[id];
+        const catName = state.categories[q.categoryId]?.name || "N/A";
+        const subName = state.subcategories[q.subcategoryId]?.name || "N/A";
+        
+        // Match connected options text [1]
+        const opts = Object.values(state.options).filter(o => o.questionId === id);
+        const optionsList = opts.map(o => `<li>${o.optionText} ${o.isCorrect ? '<strong class="text-success">(Correct)</strong>':''}</li>`).join("");
+
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <strong class="d-block">${q.questionText}</strong>
+              <small class="text-secondary">Exp: ${q.explanation || "None"}</small>
+            </td>
+            <td><span class="badge bg-secondary mb-1">${catName}</span><br><span class="badge bg-light text-dark">${subName}</span></td>
+            <td><span class="badge bg-warning">${q.difficulty.toUpperCase()}</span></td>
+            <td><ul class="mb-0 ps-3 small">${optionsList}</ul></td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" onclick="editQuestion('${id}')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteQuestion('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.prepareQuestionModal = function() {
+      document.getElementById("questionForm").reset();
+      document.getElementById("questionEditId").value = "";
+      document.getElementById("questionModalTitle").innerText = "Create MCQ & Options";
+      populateCategoryDropdown("questionCategory");
+      document.getElementById("questionSubcategory").innerHTML = '<option value="">Select Subcategory</option>';
+    };
+
+    window.editQuestion = function(id) {
+      const q = state.questions[id];
+      document.getElementById("questionEditId").value = id;
+      populateCategoryDropdown("questionCategory", q.categoryId);
+      populateSubcategoryDropdown("questionSubcategory", q.categoryId, q.subcategoryId);
+      document.getElementById("questionText").value = q.questionText;
+      document.getElementById("questionDifficulty").value = q.difficulty;
+      document.getElementById("questionExplanation").value = q.explanation || "";
+
+      // Load matching options to modal inputs [1]
+      const opts = Object.keys(state.options).filter(optKey => state.options[optKey].questionId === id);
+      opts.forEach((optKey, idx) => {
+        if (idx < 4) {
+          document.getElementById(`optVal${idx}`).value = state.options[optKey].optionText;
+          if (state.options[optKey].isCorrect) {
+            document.querySelector(`input[name="correctOptionRadio"][value="${idx}"]`).checked = true;
+          }
+        }
+      });
+
+      document.getElementById("questionModalTitle").innerText = "Edit Question & Options";
+      new bootstrap.Modal(document.getElementById("questionModal")).show();
+    };
+
+    document.getElementById("questionForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("questionEditId").value;
+      const catId = document.getElementById("questionCategory").value;
+      const subId = document.getElementById("questionSubcategory").value;
+      const text = document.getElementById("questionText").value;
+      const difficulty = document.getElementById("questionDifficulty").value;
+      const exp = document.getElementById("questionExplanation").value;
+      const correctIdx = document.querySelector('input[name="correctOptionRadio"]:checked').value;
+
+      const qPayload = {
+        categoryId: catId,
+        subcategoryId: subId,
+        questionText: text,
+        difficulty: difficulty,
+        explanation: exp,
+        status: true,
+        createdAt: new Date().toISOString()
+      };
+
+      try {
+        let qKey = id;
+        if (id) {
+          await update(ref(db, `questions/${id}`), qPayload);
+          // Delete existing matching options first [1]
+          const opts = Object.keys(state.options).filter(optKey => state.options[optKey].questionId === id);
+          for (let optKey of opts) {
+            await remove(ref(db, `options/${optKey}`));
+          }
+        } else {
+          const newRef = push(ref(db, "questions"));
+          qKey = newRef.key;
+          await set(newRef, qPayload);
+        }
+
+        // Batch update options table [1]
+        for (let i = 0; i < 4; i++) {
+          const optText = document.getElementById(`optVal${i}`).value;
+          await push(ref(db, "options"), {
+            questionId: qKey,
+            optionText: optText,
+            isCorrect: i == correctIdx
+          });
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById("questionModal")).hide();
+        Swal.fire("Saved", "Question and options stored successfully.", "success");
+      } catch (err) {
+        Swal.fire("Error Saving", err.message, "error");
+      }
+    });
+
+    window.deleteQuestion = function(id) {
+      Swal.fire({
+        title: "Delete Question?",
+        text: "This removes the parent question record and options.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444",
+        confirmButtonText: "Confirm Delete"
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await remove(ref(db, `questions/${id}`));
+            // Remove options linked to question [1]
+            const opts = Object.keys(state.options).filter(optKey => state.options[optKey].questionId === id);
+            for (let optKey of opts) {
+              await remove(ref(db, `options/${optKey}`));
+            }
+            Swal.fire("Deleted", "Question configuration has been fully cleared.", "success");
+          } catch (err) {
+            Swal.fire("Error", err.message, "error");
+          }
+        }
+      });
+    };
+
+    // 4. Admin Bulk Upload logic
+    document.getElementById("bulkUploadModal").addEventListener("show.bs.modal", () => {
+      populateCategoryDropdown("bulkCategory");
+      document.getElementById("bulkSubcategory").innerHTML = '<option value="">Select Subcategory</option>';
+    });
+
+    window.executeBulkUpload = async function() {
+      const catId = document.getElementById("bulkCategory").value;
+      const subId = document.getElementById("bulkSubcategory").value;
+      const jsonText = document.getElementById("bulkJsonInput").value;
+
+      if (!catId || !subId || !jsonText) {
+        return Swal.fire("Required", "All configurations and JSON code are required.", "warning");
+      }
+
+      try {
+        const parsed = JSON.parse(jsonText);
+        if (!Array.isArray(parsed)) {
+          return Swal.fire("Validation Error", "Schema must be an array of Question objects.", "error");
+        }
+
+        for (let entry of parsed) {
+          const qRef = push(ref(db, "questions"));
+          await set(qRef, {
+            categoryId: catId,
+            subcategoryId: subId,
+            questionText: entry.questionText,
+            difficulty: entry.difficulty || "medium",
+            explanation: entry.explanation || "",
+            status: true,
+            createdAt: new Date().toISOString()
+          });
+
+          if (entry.options && Array.isArray(entry.options)) {
+            for (let opt of entry.options) {
+              await push(ref(db, "options"), {
+                questionId: qRef.key,
+                optionText: opt.text,
+                isCorrect: opt.isCorrect === true
+              });
+            }
+          }
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById("bulkUploadModal")).hide();
+        Swal.fire("Import Successful", `Successfully parsed and recorded ${parsed.length} questions.`, "success");
+      } catch (err) {
+        Swal.fire("Syntax Error", `Could not parse JSON. Detailed error: ${err.message}`, "error");
+      }
+    };
+
+    // 5. User Management Panel logic [1]
+    function renderUsersTable() {
+      const tbody = document.getElementById("usersTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.users).forEach(id => {
+        const user = state.users[id];
+        const isActive = user.status === "active";
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <strong>${user.name || "Default Account"}</strong><br>
+              <small class="text-secondary">${user.email}</small>
+            </td>
+            <td><span class="badge ${user.role === 'admin' ? 'bg-indigo-gradient' : 'bg-secondary'}">${user.role.toUpperCase()}</span></td>
+            <td><span class="badge ${isActive ? 'bg-success' : 'bg-danger'}">${user.status || "active"}</span></td>
+            <td>
+              <button class="btn btn-sm ${isActive ? 'btn-outline-warning' : 'btn-outline-success'}" onclick="toggleUserStatus('${id}', '${user.status}')">
+                <i class="fas ${isActive ? 'fa-user-slash' : 'fa-user-check'}"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.toggleUserStatus = function(id, currentStatus) {
+      const nextStatus = currentStatus === "inactive" ? "active" : "inactive";
+      update(ref(db, `users/${id}`), { status: nextStatus }).then(() => {
+        Swal.fire("Status Synchronized", `User status marked as ${nextStatus}.`, "success");
+      });
+    };
+
+    window.deleteUser = function(id) {
+      Swal.fire({
+        title: "Delete Account?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          remove(ref(db, `users/${id}`)).then(() => {
+            Swal.fire("User Purged", "User account wiped out dynamically.", "success");
+          });
+        }
+      });
+    };
+
+    // 6. Admin Comments Moderation Panel [1]
+    function renderCommentsTable() {
+      const tbody = document.getElementById("commentsTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.comments).forEach(id => {
+        const comment = state.comments[id];
+        const commenter = state.users[comment.userId]?.name || "Student Account";
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${commenter}</strong></td>
+            <td>${comment.commentText}</td>
+            <td><small class="text-secondary">${new Date(comment.createdAt).toLocaleDateString()}</small></td>
+            <td>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteComment('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.deleteComment = function(id) {
+      Swal.fire({
+        title: "Remove Comment?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#ef4444"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          remove(ref(db, `comments/${id}`)).then(() => {
+            Swal.fire("Deleted", "Comment moderated successfully.", "success");
+          });
+        }
+      });
+    };
+
+    // 7. Admin Report management flags [1]
+    function renderReportsTable() {
+      const tbody = document.getElementById("reportsTableBody");
+      tbody.innerHTML = "";
+      Object.keys(state.reports).forEach(id => {
+        const rep = state.reports[id];
+        const user = state.users[rep.userId]?.name || "Anonymous";
+        const qText = state.questions[rep.questionId]?.questionText || "Question deleted";
+        tbody.innerHTML += `
+          <tr>
+            <td><small>Flagged by:</small> <strong>${user}</strong></td>
+            <td><em class="small">${qText}</em></td>
+            <td><strong class="text-danger small">${rep.reason}</strong></td>
+            <td><span class="badge ${rep.status === 'pending' ? 'bg-warning' : 'bg-success'}">${rep.status}</span></td>
+            <td>
+              ${rep.status === 'pending' ? `<button class="btn btn-sm btn-success" onclick="resolveReport('${id}')"><i class="fas fa-check"></i> Resolve</button>` : ""}
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteReport('${id}')"><i class="fas fa-trash-can"></i></button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.resolveReport = function(id) {
+      update(ref(db, `reports/${id}`), { status: "resolved" }).then(() => {
+        Swal.fire("Report Resolved", "Status marked as resolved.", "success");
+      });
+    };
+
+    window.deleteReport = function(id) {
+      remove(ref(db, `reports/${id}`)).then(() => {
+        Swal.fire("Report Cleared", "The report was removed from the list.", "success");
+      });
+    };
+
+    // --------------------------------------------------
+    // DYNAMIC CHART DATA GENERATOR & UPDATER [1]
+    // --------------------------------------------------
+    function updateAdminChartsData() {
+      // Data processing maps
+      const catCountMap = {};
+      Object.values(state.questions).forEach(q => {
+        const name = state.categories[q.categoryId]?.name || "Uncategorized";
+        catCountMap[name] = (catCountMap[name] || 0) + 1;
+      });
+
+      const globalAnswers = Object.values(state.userAnswers);
+      const corrects = globalAnswers.filter(a => a.isCorrect === true).length;
+      const wrongs = globalAnswers.filter(a => a.isCorrect === false).length;
+
+      const attempts = Object.values(state.quizAttempts);
+      const attemptsDates = attempts.map(a => new Date(a.date).toLocaleDateString());
+      const attemptsScores = attempts.map(a => a.score);
+
+      const monthsMap = {};
+      Object.values(state.questions).forEach(q => {
+        if (q.createdAt) {
+          const m = new Date(q.createdAt).toLocaleString('default', { month: 'short' });
+          monthsMap[m] = (monthsMap[m] || 0) + 1;
+        }
+      });
+
+      const usersGrowthMap = {};
+      Object.keys(state.users).forEach(uid => {
+        // Mock simple timeline representation safely from cached users growth
+        usersGrowthMap["Active State"] = (usersGrowthMap["Active State"] || 0) + 1;
+      });
+
+      // Update dashboard chart instances [1]
+      const pieCtx = document.getElementById("adminPieChart");
+      if (pieCtx) {
+        if (charts.adminPie) charts.adminPie.destroy();
+        charts.adminPie = new Chart(pieCtx, {
+          type: "pie",
+          data: {
+            labels: Object.keys(catCountMap),
+            datasets: [{
+              data: Object.values(catCountMap),
+              backgroundColor: ["#6366f1", "#a855f7", "#10b981", "#f97316", "#06b6d4"],
+              borderWidth: 0
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+
+      const doughnutCtx = document.getElementById("adminDoughnutChart");
+      if (doughnutCtx) {
+        if (charts.adminDoughnut) charts.adminDoughnut.destroy();
+        charts.adminDoughnut = new Chart(doughnutCtx, {
+          type: "doughnut",
+          data: {
+            labels: ["Correct", "Wrong"],
+            datasets: [{
+              data: [corrects, wrongs],
+              backgroundColor: ["#10b981", "#ef4444"],
+              borderWidth: 0
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+
+      const areaCtx = document.getElementById("adminAreaChart");
+      if (areaCtx) {
+        if (charts.adminArea) charts.adminArea.destroy();
+        charts.adminArea = new Chart(areaCtx, {
+          type: "line",
+          data: {
+            labels: attemptsDates.slice(-15),
+            datasets: [{
+              label: "Exam Performance Trend",
+              data: attemptsScores.slice(-15),
+              fill: true,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.1)",
+              tension: 0.4
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+
+      // Update advanced analytics views [1]
+      const analyticsBarCtx = document.getElementById("analyticsBarChart");
+      if (analyticsBarCtx) {
+        if (charts.analyticsBar) charts.analyticsBar.destroy();
+        charts.analyticsBar = new Chart(analyticsBarCtx, {
+          type: "bar",
+          data: {
+            labels: Object.keys(monthsMap),
+            datasets: [{
+              label: "Monthly Volume Added",
+              data: Object.values(monthsMap),
+              backgroundColor: "#a855f7",
+              borderRadius: 6
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+
+      const analyticsLineCtx = document.getElementById("analyticsLineChart");
+      if (analyticsLineCtx) {
+        if (charts.analyticsLine) charts.analyticsLine.destroy();
+        charts.analyticsLine = new Chart(analyticsLineCtx, {
+          type: "line",
+          data: {
+            labels: Object.keys(usersGrowthMap),
+            datasets: [{
+              label: "Active Users Registry Size",
+              data: Object.values(usersGrowthMap),
+              borderColor: "#06b6d4",
+              backgroundColor: "rgba(6, 182, 212, 0.1)",
+              fill: true
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+    }
+
+    // --------------------------------------------------
+    // COMPREHENSIVE GLOBAL SEARCH ENGINE
+    // --------------------------------------------------
+    function setupGlobalSearch() {
+      document.querySelectorAll(".global-search-input").forEach(input => {
+        input.addEventListener("input", (e) => {
+          const val = e.target.value.toLowerCase().trim();
+          const dropdown = input.nextElementSibling;
+          
+          if (!val) {
+            dropdown.style.display = "none";
+            return;
+          }
+
+          dropdown.innerHTML = "";
+          let resultsFound = false;
+
+          // Search Categories [1]
+          Object.keys(state.categories).forEach(id => {
+            const cat = state.categories[id];
+            if (cat.name.toLowerCase().includes(val)) {
+              resultsFound = true;
+              dropdown.innerHTML += `
+                <div class="p-2 border-bottom cursor-pointer hover-bg" onclick="navigateToSearchTarget('categories', '${id}')">
+                  <span class="badge bg-primary me-2">Category</span> <strong>${cat.name}</strong>
+                </div>
+              `;
+            }
+          });
+
+          // Search Subcategories [1]
+          Object.keys(state.subcategories).forEach(id => {
+            const sub = state.subcategories[id];
+            if (sub.name.toLowerCase().includes(val)) {
+              resultsFound = true;
+              dropdown.innerHTML += `
+                <div class="p-2 border-bottom cursor-pointer hover-bg" onclick="navigateToSearchTarget('subcategories', '${id}')">
+                  <span class="badge bg-secondary me-2">Subcategory</span> <strong>${sub.name}</strong>
+                </div>
+              `;
+            }
+          });
+
+          // Search Questions [1]
+          Object.keys(state.questions).forEach(id => {
+            const q = state.questions[id];
+            if (q.questionText.toLowerCase().includes(val)) {
+              resultsFound = true;
+              dropdown.innerHTML += `
+                <div class="p-2 border-bottom cursor-pointer hover-bg" onclick="navigateToSearchTarget('questions', '${id}')">
+                  <span class="badge bg-warning me-2">Question</span> <span class="small">${q.questionText}</span>
+                </div>
+              `;
+            }
+          });
+
+          if (resultsFound) {
+            dropdown.style.display = "block";
+          } else {
+            dropdown.innerHTML = '<div class="p-3 text-muted text-center small">No matches found.</div>';
+            dropdown.style.display = "block";
+          }
+        });
+      });
+
+      // Close dropdowns on outer click
+      document.addEventListener("click", (e) => {
+        if (!e.target.classList.contains("global-search-input")) {
+          document.querySelectorAll(".search-results-overlay").forEach(overlay => {
+            overlay.style.display = "none";
+          });
+        }
+      });
+    }
+
+    // Direct routing target click inside dynamic global search dropdown
+    window.navigateToSearchTarget = function(type, id) {
+      document.querySelectorAll(".search-results-overlay").forEach(o => o.style.display = "none");
+      document.querySelectorAll(".global-search-input").forEach(i => i.value = "");
+
+      if (state.role === "admin") {
+        let navTarget = "admin-dashboard-sub";
+        if (type === "categories") navTarget = "admin-categories-sub";
+        if (type === "subcategories") navTarget = "admin-subcategories-sub";
+        if (type === "questions") navTarget = "admin-questions-sub";
+
+        document.querySelectorAll(".admin-nav-item").forEach(item => {
+          item.classList.remove("active");
+          if (item.getAttribute("data-target") === navTarget) {
+            item.classList.add("active");
+          }
+        });
+
+        document.querySelectorAll(".admin-subview").forEach(sv => sv.classList.add("d-none"));
+        document.getElementById(navTarget).classList.remove("d-none");
+      } else {
+        // Student routing context redirects
+        document.querySelectorAll(".student-nav-item").forEach(item => {
+          item.classList.remove("active");
+          if (item.getAttribute("data-target") === "student-browse-sub") {
+            item.classList.add("active");
+          }
+        });
+        document.querySelectorAll(".student-subview").forEach(sv => sv.classList.add("d-none"));
+        document.getElementById("student-browse-sub").classList.remove("d-none");
+        
+        if (type === "questions") {
+          const q = state.questions[id];
+          loadPracticeQuestions(q.categoryId);
+          setTimeout(() => loadInteractivePracticeQuestion(id), 200);
+        } else if (type === "categories") {
+          loadPracticeQuestions(id);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
